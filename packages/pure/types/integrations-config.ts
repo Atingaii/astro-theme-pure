@@ -4,7 +4,7 @@ import { FriendLinksSchema } from '../schemas/links'
 
 export const IntegrationConfigSchema = () =>
   z.object({
-    links: FriendLinksSchema(),
+    links: FriendLinksSchema().optional(),
 
     /**
      * Define whether default site search provider Pagefind is enabled.
@@ -47,18 +47,20 @@ export const IntegrationConfigSchema = () =>
     }),
 
     /** The Waline comment system */
-    waline: z.object({
-      /** Enable the Waline comment system. */
-      enable: z.boolean().default(false),
-      /** The server to use for the Waline comment system. */
-      server: z.string().optional(),
-      /** Show meta info for comments */
-      showMeta: z.boolean().default(true),
-      /** The emoji to use for the Waline comment system. */
-      emoji: z.array(z.string()).optional(),
-      /** Additional configurations for the Waline comment system. */
-      additionalConfigs: z.record(z.string(), z.any()).default({})
-    })
+    waline: z
+      .object({
+        /** Enable the Waline comment system. */
+        enable: z.boolean().default(false),
+        /** The server to use for the Waline comment system. */
+        server: z.string().optional(),
+        /** Show meta info for comments */
+        showMeta: z.boolean().default(true),
+        /** The emoji to use for the Waline comment system. */
+        emoji: z.array(z.string()).optional(),
+        /** Additional configurations for the Waline comment system. */
+        additionalConfigs: z.record(z.string(), z.any()).default({})
+      })
+      .optional()
   })
 
 export type IntegrationConfig = z.infer<ReturnType<typeof IntegrationConfigSchema>>

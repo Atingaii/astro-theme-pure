@@ -1,90 +1,72 @@
 ---
-import { type ImageMetadata } from 'astro'
+import type { ImageMetadata } from 'astro'
 import { Image } from 'astro:assets'
 
-import { Svg } from 'astro-pure/user'
-import { cn } from 'astro-pure/utils'
+import type { iconsType } from 'astro-pure/types'
+import { Icon } from 'astro-pure/user'
+
+interface ToolItem {
+  name: string
+  icon: ImageMetadata
+  frameClass?: string
+  imageClass?: string
+}
+
+interface ToolGroup {
+  title: string
+  icon: iconsType
+  description: string
+  items: readonly ToolItem[]
+}
 
 interface Props {
-  class?: string
-  title: string
-  tools: {
-    name: string
-    description: string
-    href: string
-    icon: Promise<typeof import('*.svg?raw')> | ImageMetadata
-    darkIcon?: Promise<typeof import('*.svg?raw')> | ImageMetadata
-  }[]
+  groups: readonly ToolGroup[]
 }
 
-const { class: className, title, tools, ...props } = Astro.props
-
-function isImageMetadata(obj: unknown): obj is ImageMetadata {
-  return typeof obj === 'object' && obj !== null && 'src' in obj
-}
+const { groups } = Astro.props
 ---
 
-<div
-  class={cn('not-prose flex flex-col rounded-xl border py-3 px-3 gap-y-3 sm:gap-y-4', className)}
-  {...props}
->
-  <div class='m-0 px-2 text-lg font-medium'>{title}</div>
-  <div class='grid grid-cols-1 gap-x-2 gap-y-2 sm:grid-cols-2'>
-    {
-      tools.map((tool) => (
-        <a
-          class='group relative text-sm leading-normal no-underline'
-          href={tool.href}
-          id={tool.name}
-          target='_blank'
-        >
-          <div class='flex items-center gap-x-3 rounded-lg border border-transparent px-1.5 py-1 transition-colors hover:border-border hover:bg-muted'>
-            {tool.darkIcon ? (
-              <>
-                {isImageMetadata(tool.icon) ? (
-                  <div class='size-10 rounded-lg bg-card p-2 dark:hidden'>
-                    <Image src={tool.icon} alt={tool.name} class='h-full w-full object-contain' />
-                  </div>
-                ) : (
-                  <Svg
-                    src={tool.icon}
-                    class='size-10 rounded-lg bg-card fill-foreground p-2 dark:hidden'
-                  />
-                )}
-
-                {isImageMetadata(tool.darkIcon) ? (
-                  <div class='size-10 rounded-lg bg-card p-2 hidden dark:block'>
-                    <Image
-                      src={tool.darkIcon}
-                      alt={tool.name}
-                      class='h-full w-full object-contain'
-                    />
-                  </div>
-                ) : (
-                  <Svg
-                    src={tool.darkIcon}
-                    class='size-10 rounded-lg bg-card fill-foreground p-2 hidden dark:block'
-                  />
-                )}
-              </>
-            ) : (
-              <>
-                {isImageMetadata(tool.icon) ? (
-                  <div class='size-10 rounded-lg bg-card p-2'>
-                    <Image src={tool.icon} alt={tool.name} class='h-full w-full object-contain' />
-                  </div>
-                ) : (
-                  <Svg src={tool.icon} class='size-10 rounded-lg bg-card fill-foreground p-2' />
-                )}
-              </>
-            )}
-            <div class='z-20 flex flex-col'>
-              <div class='font-medium text-foreground'>{tool.name}</div>
-              <div class='font-normal'>{tool.description}</div>
-            </div>
+<div class='not-prose space-y-5'>
+  {
+    groups.map((group) => (
+      <section class='rounded-3xl border border-border/70 bg-gradient-to-b from-card to-muted/35 p-5 shadow-sm'>
+        <div class='flex items-start gap-4'>
+          <div class='flex size-11 shrink-0 items-center justify-center rounded-2xl bg-background text-primary shadow-sm ring-1 ring-border/60'>
+            <Icon class='size-6' name={group.icon} />
           </div>
-        </a>
-      ))
-    }
-  </div>
+          <div class='space-y-1'>
+            <h3 class='text-lg font-semibold text-foreground'>{group.title}</h3>
+            <p class='text-sm leading-6 text-muted-foreground'>{group.description}</p>
+          </div>
+        </div>
+
+        <div class='mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3'>
+          {
+            group.items.map((tool) => (
+              <div class='flex min-h-[4.5rem] items-center gap-3 rounded-2xl border border-border/70 bg-background/80 px-4 py-3 shadow-sm'>
+                <div
+                  class:list={[
+                    'flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-[1.15rem] ring-1 ring-black/6 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] dark:ring-white/8 dark:shadow-none',
+                    tool.frameClass ?? 'bg-white/95 dark:bg-zinc-950/90'
+                  ]}
+                >
+                  <Image
+                    src={tool.icon}
+                    alt={`${tool.name} icon`}
+                    width={48}
+                    height={48}
+                    class:list={[
+                      'object-contain',
+                      tool.imageClass ?? 'size-10'
+                    ]}
+                  />
+                </div>
+                <p class='text-sm font-medium text-foreground'>{tool.name}</p>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+    ))
+  }
 </div>

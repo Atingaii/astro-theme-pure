@@ -1,11 +1,31 @@
+import { existsSync, readdirSync } from 'node:fs'
+import { resolve } from 'node:path'
+
 import { type CollectionEntry, type CollectionKey, getCollection } from 'astro:content'
 
 type Collections = CollectionEntry<CollectionKey>[]
 
 export const prod = import.meta.env.PROD
 
+function hasMarkdownFiles(dirPath: string): boolean {
+  if (!existsSync(dirPath)) return false
+
+  for (const entry of readdirSync(dirPath, { withFileTypes: true })) {
+    const fullPath = resolve(dirPath, entry.name)
+    if (entry.isDirectory() && hasMarkdownFiles(fullPath)) return true
+    if (entry.isFile() && /\.(md|mdx)$/i.test(entry.name)) return true
+  }
+
+  return false
+}
+
 /** Note: this function filters out draft posts based on the environment */
 export async function getBlogCollection(contentType: CollectionKey = 'blog') {
+  const contentDir = resolve(process.cwd(), 'src', 'content', contentType)
+  if (!hasMarkdownFiles(contentDir)) {
+    return [] as CollectionEntry<typeof contentType>[]
+  }
+
   return await getCollection(contentType, ({ data }: CollectionEntry<typeof contentType>) => {
     // Not in production & draft is not false
     return prod ? !data.draft : true

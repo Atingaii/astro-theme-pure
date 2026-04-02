@@ -90,9 +90,11 @@ const socialImageURL = new URL(ogImage ? ogImage : config.socialCard, Astro.url)
   /* User script*/
   prod && (
     <script>
-      console.log( '%c Astro Theme Pure %c https://github.com/cworld1/astro-theme-pure/',
-      'color:#fff;background:linear-gradient(90deg,#448bff,#44e9ff);padding:5px 0;',
-      'color:#000;background:linear-gradient(90deg,#44e9ff,#ffffff);padding:5px 10px 5px 0px;' )
+      console.log(
+        "%c Spark'Blog %c https://github.com/Atingaii",
+        'color:#fff;background:linear-gradient(90deg,#448bff,#44e9ff);padding:5px 0;',
+        'color:#000;background:linear-gradient(90deg,#44e9ff,#ffffff);padding:5px 10px 5px 0px;'
+      )
     </script>
   )
 }

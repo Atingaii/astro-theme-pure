@@ -14,6 +14,37 @@ export const getStaticPaths = (async ({ paginate }) => {
   const collections = sortMDByDate(await getBlogCollection())
   const uniqueTags = getUniqueTagsWithCount(collections).map(([tag]) => tag)
   const collectionsCount = collections.length
+
+  if (collectionsCount === 0) {
+    const emptyPage = {
+      currentPage: 1,
+      data: [] as CollectionEntry<'blog'>[],
+      end: 0,
+      lastPage: 1,
+      size: config.content.blogPageSize,
+      start: 0,
+      total: 0,
+      url: {
+        current: '/blog',
+        first: '/blog',
+        last: '/blog',
+        next: undefined,
+        prev: undefined
+      }
+    } as Page<CollectionEntry<'blog'>>
+
+    return [
+      {
+        params: { page: undefined },
+        props: {
+          page: emptyPage,
+          uniqueTags,
+          collectionsCount
+        }
+      }
+    ]
+  }
+
   return paginate(collections, {
     pageSize: config.content.blogPageSize,
     props: { uniqueTags, collectionsCount }
@@ -57,7 +88,7 @@ const paginationProps = {
     </div>
     {
       page.data.length === 0 ? (
-        <p>No posts yet.</p>
+        <p>还没有发布文章，第一篇内容正在路上。</p>
       ) : (
         <div class='grid gap-y-16 sm:grid-cols-[3fr_1fr] sm:gap-x-8'>
           <section aria-label='Blog posts list' class='animate' id='content'>
