@@ -8,7 +8,12 @@ tags:
   - codex
   - workflow
 language: 'zh-CN'
+heroImage:
+  src: './wsl2-tmux-codex-cover.webp'
+  alt: '雪山封面'
 ---
+
+import { Aside } from 'astro-pure/user'
 
 # WSL2 重启后，我不想再重搭一遍 Codex 工作台了
 
@@ -24,12 +29,10 @@ language: 'zh-CN'
 
 后来我没有继续折腾更重的方案，而是换了个思路：**别想着把正在执行的任务原样冻住，先把工作台恢复回来。**
 
-> [!note]
-> 这篇文章解决的是“重启之后快速回到昨天的工作现场”，不是“让正在执行中的进程无损续跑”。`tmux-resurrect` 和 `tmux-continuum` 更像是保存会话、布局和目录，而不是做进程级快照。
-
-![WSL2 下的 tmux 工作台配图](https://cdn.jsdelivr.net/gh/IT-NuanxinPro/nuanXinProPic@v1.2.52/preview/desktop/%E9%A3%8E%E6%99%AF/%E9%9B%AA%E5%B1%B1/20260406200436.webp)
-
-*有些问题不难，只是重复多了以后会很磨人。*
+<Aside type="note">
+  这篇文章解决的是“重启之后快速回到昨天的工作现场”，不是“让正在执行中的进程无损续跑”。`tmux-resurrect`
+  和 `tmux-continuum` 更像是保存会话、布局和目录，而不是做进程级快照。
+</Aside>
 
 ## 为什么最后选 `tmux-resurrect` + `tmux-continuum`
 
@@ -48,8 +51,10 @@ language: 'zh-CN'
 
 这样我重新进入 `WSL2` 之后，只要执行一次 `tmux`，昨天那套布局基本就回来了，马上就能继续干活。
 
-> [!caution]
-> `tmux-continuum` 依赖 `tmux-resurrect`。另外它的自动恢复只会在 **tmux server 首次启动** 时触发，单纯执行 `tmux source-file ~/.tmux.conf` 并不会触发自动恢复。
+<Aside type="caution">
+  `tmux-continuum` 依赖 `tmux-resurrect`。另外它的自动恢复只会在 **tmux server 首次启动**
+  时触发，单纯执行 `tmux source-file ~/.tmux.conf` 并不会触发自动恢复。
+</Aside>
 
 ## 这套方案解决了什么
 
@@ -152,8 +157,10 @@ run '~/.tmux/plugins/tpm/tpm'
 - `@continuum-save-interval` 默认就是 `15` 分钟，我这里显式写出来，是为了以后回头看配置时不用猜。
 - `@resurrect-capture-pane-contents` 我默认没开。因为我主要想恢复布局和目录，不太在意把 pane 的历史输出也带回来。
 
-> [!tip]
-> 如果你后面加了主题插件，而且发现自动保存不生效，先别怀疑人生，先检查两件事：状态栏是不是关了，`tmux-continuum` 是不是还在插件列表最后。
+<Aside type="tip">
+  如果你后面加了主题插件，而且发现自动保存不生效，先别怀疑人生，先检查两件事：状态栏是不是关了，`tmux-continuum`
+  是不是还在插件列表最后。
+</Aside>
 
 ### 4. 进入 `tmux`，安装插件
 
@@ -261,8 +268,9 @@ ta
 
 如果你的诉求和我一样，那 `tmux-resurrect + tmux-continuum` 已经够用了。
 
-> [!danger]
-> 如果你追求的是“系统重启后，长任务继续跑、交互状态继续在、输出不丢”，那这套方案不是答案。它更像是把桌面和工位给你摆回去，不是把昨天那一刻的进程内存冻结下来。
+<Aside type="danger">
+  如果你追求的是“系统重启后，长任务继续跑、交互状态继续在、输出不丢”，那这套方案不是答案。它更像是把桌面和工位给你摆回去，不是把昨天那一刻的进程内存冻结下来。
+</Aside>
 
 ## 最后
 
