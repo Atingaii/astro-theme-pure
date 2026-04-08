@@ -48,7 +48,7 @@ language: 'zh-CN'
 
 这样我重新进入 `WSL2` 之后，只要执行一次 `tmux`，昨天那套布局基本就回来了，马上就能继续干活。
 
-> [!important]
+> [!caution]
 > `tmux-continuum` 依赖 `tmux-resurrect`。另外它的自动恢复只会在 **tmux server 首次启动** 时触发，单纯执行 `tmux source-file ~/.tmux.conf` 并不会触发自动恢复。
 
 ## 这套方案解决了什么
@@ -261,7 +261,7 @@ ta
 
 如果你的诉求和我一样，那 `tmux-resurrect + tmux-continuum` 已经够用了。
 
-> [!warning]
+> [!danger]
 > 如果你追求的是“系统重启后，长任务继续跑、交互状态继续在、输出不丢”，那这套方案不是答案。它更像是把桌面和工位给你摆回去，不是把昨天那一刻的进程内存冻结下来。
 
 ## 最后
